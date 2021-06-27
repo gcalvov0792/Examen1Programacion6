@@ -13,4 +13,9 @@
     <Folder Include="wwwroot\App\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Entity\Entity.csproj" />
+    <ProjectReference Include="..\WBL\WBL.csproj" />
+  </ItemGroup>
+
 </Project>
