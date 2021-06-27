@@ -234,7 +234,7 @@ namespace BD
         }
 
         //metodo 9 
-        public async Task<DBEntity> ExecuteAsync<T>(string sp, object Param = null, int? Timeout = null)
+        public async Task<DBEntity> ExecuteAsync(string sp, object Param = null, int? Timeout = null)
         {
 
             try
@@ -248,7 +248,7 @@ namespace BD
 
                     await result.ReadAsync();
 
-                    return new()
+                    return new ()
                     {
                         CodeError = result.GetInt32(0),
                         MsgError = result.GetString(1)
