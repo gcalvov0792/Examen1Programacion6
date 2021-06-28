@@ -1,4 +1,5 @@
 ﻿using BD;
+using Entity;
 using Entity.dbo;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,13 @@ using System.Threading.Tasks;
 
 namespace WBL
 {
-    public class PuestosService
+    public interface IPuestosService
+    {
+        Task<IEnumerable<PuestosEntity>> Get();
+        Task<PuestosEntity> GetById(PuestosEntity entity);
+    }
+
+    public class PuestosService : IPuestosService
     {
         private readonly IDataAccess sql;
 
@@ -17,7 +24,7 @@ namespace WBL
             sql = _sql;
         }
 
-        //metodo para obtener la informacion
+        //1. metodo para obtener la informacion
         public async Task<IEnumerable<PuestosEntity>> Get()
         {
             try
@@ -32,7 +39,7 @@ namespace WBL
 
         }
 
-        //metodo para obtener por id
+        //2. metodo para obtener por id
         public async Task<PuestosEntity> GetById(PuestosEntity entity)
         {
             try
@@ -51,5 +58,66 @@ namespace WBL
             }
 
         }
+
+        //3. metodo para crear / insertar datos en la tabla
+        public async Task<DBEntity> Create(PuestosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("PuestosInsertar", new
+                {
+                    entity.Nombre,
+                    entity.Salario,
+                    entity.Estado
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        //4. metodo para actualizar datos en la tabla
+        public async Task<DBEntity> Update(PuestosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("PuestosActualizar", new
+                {
+                    entity.Id_Puesto,
+                    entity.Nombre,
+                    entity.Salario,
+                    entity.Estado
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        //5. metodo para eliminar datos en la tabla
+        public async Task<DBEntity> Delete(PuestosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("PuestosEliminar", new
+                {
+                    entity.Id_Puesto
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+
     }
 }

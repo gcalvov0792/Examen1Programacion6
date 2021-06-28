@@ -1,4 +1,5 @@
 ﻿using BD;
+using Entity;
 using Entity.dbo;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,13 @@ using System.Threading.Tasks;
 
 namespace WBL
 {
-    public class TitulosService
+    public interface ITitulosService
+    {
+        Task<IEnumerable<TitulosEntity>> Get();
+        Task<TitulosEntity> GetById(TitulosEntity entity);
+    }
+
+    public class TitulosService : ITitulosService
     {
         private readonly IDataAccess sql;
 
@@ -17,7 +24,7 @@ namespace WBL
             sql = _sql;
         }
 
-        //metodo para obtener la informacion
+        //1. metodo para obtener la informacion
         public async Task<IEnumerable<TitulosEntity>> Get()
         {
             try
@@ -32,7 +39,7 @@ namespace WBL
 
         }
 
-        //metodo para obtener por id
+        //2. metodo para obtener por id
         public async Task<TitulosEntity> GetById(TitulosEntity entity)
         {
 
@@ -41,8 +48,7 @@ namespace WBL
                 var result = sql.QueryFirstAsync<TitulosEntity>("TitulosObtener", new
                 {
                     entity.Id_Titulo
-                }
-                );
+                });
                 return await result;
             }
             catch (Exception)
@@ -51,6 +57,64 @@ namespace WBL
             }
 
         }
+
+        //3. metodo para crear / insertar datos en la tabla
+        public async Task<DBEntity> Create(TitulosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("TitulosInsertar", new
+                {
+                    entity.Descripcion,
+                    entity.Estado
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        //4. metodo para actualizar datos en la tabla
+        public async Task<DBEntity> Update(TitulosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("TitulosActualizar", new
+                {
+                    entity.Id_Titulo,
+                    entity.Descripcion,
+                    entity.Estado
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        //5. metodo para eliminar datos en la tabla
+        public async Task<DBEntity> Delete(TitulosEntity entity)
+        {
+            try
+            {
+                var result = sql.ExecuteAsync("TitulosEliminar", new
+                {
+                    entity.Id_Titulo
+                });
+                return await result;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
 
     }
 }
